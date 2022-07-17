@@ -168,7 +168,7 @@ public class Devotional extends TelegramLongPollingBot {
                         if(language.equals("bibleEN")){
                             salida = resultSet.getString(4);
                             ResultSet resultSet1 = SQLite.getBook(SQLite.connection,"enBooks",resultSet.getString(1));
-                            salida+="\n\n**"+resultSet1.getString(1)+"** "+resultSet.getString(2)+":"+resultSet.getString(3);
+                            salida+="\n\n"+resultSet1.getString(1)+"\t"+resultSet.getString(2)+":"+resultSet.getString(3);
                         }else {
                             salida = resultSet.getString(4);
                             ResultSet resultSet1 = SQLite.getBook(SQLite.connection,"esBooks",resultSet.getString(1));
@@ -196,8 +196,8 @@ public class Devotional extends TelegramLongPollingBot {
         }
     }
 
-    private void cronJob () throws TelegramApiException {
-        SendMessage sendMessage = new SendMessage();
+    public void cronJob () throws TelegramApiException {
+
         // Clase en la que está el código a ejecutar
         TimerTask timerTask = new TimerTask()
         {
@@ -205,9 +205,31 @@ public class Devotional extends TelegramLongPollingBot {
             {
                 // Aquí el código que queremos ejecutar.
                 try {
+                    System.out.println("RUN CRON");
+                    String salida = "";
+                    SendMessage sendMessage = new SendMessage();
+                    ResultSet resultSetUser = SQLite.getUsers(SQLite.connection);
+                    ResultSet resultSetVerse;
+                    ResultSet resultSetBook;
 
-                    execute(sendMessage);
+                    while (resultSetUser.next()){
+                        System.out.println("RUN CRON");
+                        salida = "";
+                        sendMessage.setChatId(resultSetUser.getString(1));
+                        resultSetVerse = SQLite.getVerse(SQLite.connection,resultSetUser.getString(2));
+                        if(resultSetUser.getString(2).equals("bibleEN")){
+                            resultSetBook = SQLite.getBook(SQLite.connection,"enBooks",resultSetVerse.getString(1));
+                        }else{
+                            resultSetBook = SQLite.getBook(SQLite.connection,"esBooks",resultSetVerse.getString(1));
+                        }
+                        salida+= resultSetVerse.getString(4);
+                        salida+="\n\n"+resultSetBook.getString(1)+"\t"+resultSetVerse.getString(2)+":"+resultSetVerse.getString(3);
+                        sendMessage.setText(salida);
+                        execute(sendMessage);
+                    }
                 } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -215,7 +237,7 @@ public class Devotional extends TelegramLongPollingBot {
         // Aquí se pone en marcha el timer cada segundo.
         Timer timer = new Timer();
         // Dentro de 0 milisegundos avísame cada 1000 milisegundos
-        timer.scheduleAtFixedRate(timerTask, 500, 1000);
+        timer.scheduleAtFixedRate(timerTask, 10000, 3600000*8);
     }
 }
 

@@ -15,7 +15,8 @@ public class Main {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botsApi.registerBot(new Devotional());
             System.out.println("Hello, World!");
-
+            Devotional devotional = new Devotional();
+            devotional.cronJob();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
