@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static java.lang.Thread.sleep;
 
@@ -192,6 +194,28 @@ public class Devotional extends TelegramLongPollingBot {
                 }
             }
         }
+    }
+
+    private void cronJob () throws TelegramApiException {
+        SendMessage sendMessage = new SendMessage();
+        // Clase en la que está el código a ejecutar
+        TimerTask timerTask = new TimerTask()
+        {
+            public void run()
+            {
+                // Aquí el código que queremos ejecutar.
+                try {
+
+                    execute(sendMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        // Aquí se pone en marcha el timer cada segundo.
+        Timer timer = new Timer();
+        // Dentro de 0 milisegundos avísame cada 1000 milisegundos
+        timer.scheduleAtFixedRate(timerTask, 500, 1000);
     }
 }
 

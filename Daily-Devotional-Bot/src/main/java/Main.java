@@ -4,10 +4,12 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Load Bot");
+
         SQLite.connection= SQLite.connect();
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
