@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -161,7 +162,17 @@ public class Devotional extends TelegramLongPollingBot {
                     String salida = "HERE";
                     System.out.println("Obtenemos el Verso");
                     try {
-                        salida = SQLite.getVerse(SQLite.connection,language).getString(1);
+                        ResultSet resultSet = SQLite.getVerse(SQLite.connection,language);
+                        if(language.equals("bibleEN")){
+                            salida = resultSet.getString(4);
+                            ResultSet resultSet1 = SQLite.getBook(SQLite.connection,"enBooks",resultSet.getString(1));
+                            salida+="\n\n**"+resultSet1.getString(1)+"** "+resultSet.getString(2)+":"+resultSet.getString(3);
+                        }else {
+                            salida = resultSet.getString(4);
+                            ResultSet resultSet1 = SQLite.getBook(SQLite.connection,"esBooks",resultSet.getString(1));
+                            salida+="\n\n"+resultSet1.getString(1)+"\t"+resultSet.getString(2)+":"+resultSet.getString(3);;
+                        }
+
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -176,7 +187,6 @@ public class Devotional extends TelegramLongPollingBot {
                     break;
                 }
                 default: {
-
 
                     break;
                 }

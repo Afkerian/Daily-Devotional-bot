@@ -56,7 +56,24 @@ public class SQLite {
         SecureRandom secureRandom = new SecureRandom();
         secureRandom.setSeed(new Date().getTime());
         int verse = secureRandom.nextInt((31102-1)+1)+1;
-        String query = "SELECT text FROM "+languages+" WHERE id ="+verse;
+        String query = "SELECT book, chapter, verse, text FROM "+languages+" WHERE id ="+verse;
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        ResultSet resultSet = null;
+        try {
+            resultSet = statement.executeQuery(query);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSet;
+    }
+    public  static ResultSet getBook(Connection connection, String languageBook, String book){
+
+        String query = "SELECT name FROM "+languageBook+" WHERE id ="+book;
         Statement statement = null;
         try {
             statement = connection.createStatement();
