@@ -73,7 +73,7 @@ public class SQLite {
     }
 
     public  static boolean getCheck(Connection connection, String idUser){
-        String query = "SELECT "+idUser+" FROM users";
+        String query = "SELECT idUser FROM users WHERE idUser = '"+idUser+"'";
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -87,11 +87,63 @@ public class SQLite {
             throw new RuntimeException(e);
         }
         try {
-            if(Integer.parseInt(resultSet.getString(1))>1){
-                return true;
-            }else {
+            if(resultSet.isClosed()){
+                System.out.println("FALSO");
                 return false;
+
+            }else {
+                System.out.println("VERDADERO");
+                return true;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void updateLanguages(Connection connection, String language, String idUser){
+        String query = "UPDATE users SET languages = '"+language+"' WHERE idUser = '"+idUser+"'";
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public  static ResultSet getLanguage(Connection connection, String idUser){
+        String query = "SELECT languages FROM users WHERE idUser = '"+idUser+"'";
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        ResultSet resultSet = null;
+        try {
+            resultSet = statement.executeQuery(query);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return resultSet;
+    }
+
+    public static void updateState(Connection connection,  String idUser){
+        String query = "UPDATE users SET state = 'enable' WHERE idUser = '"+idUser+"'";
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            statement.executeUpdate(query);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
