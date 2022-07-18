@@ -107,7 +107,7 @@ public class Devotional extends TelegramLongPollingBot {
                     keyboardMarkup.setOneTimeKeyboard(true);
                     sendMessage.setReplyMarkup(keyboardMarkup);
 
-                    if(update.getMessage().getFrom().getLanguageCode().equals("ES")){
+                    if(update.getMessage().getFrom().getLanguageCode().equals("es")){
                         sendMessage.setText("Selecciona el idioma en el que te gustaria recibir los versiculos a continuacion, " +
                                 "pronto agregaremos nuevos idiomas. ");
                     }else {
@@ -124,6 +124,22 @@ public class Devotional extends TelegramLongPollingBot {
                     break;
                 }
                 case "/information": {
+                    SendMessage sendMessage = new SendMessage();
+                    sendMessage.setChatId(update.getMessage().getChatId().toString());
+                    if(update.getMessage().getFrom().getLanguageCode().equals("es")){
+                        sendMessage.setText("Este servicio es gratuito y no tiene costo, si gustas puedes " +
+                                "hacer una pequeña donación a nuestro PayPal"+"\n\n"
+                                +"https://paypal.me/ScienceCodeEcuador?country.x=EC&locale.x=es_XC");
+                    }else {
+                        sendMessage.setText("This service is free and has no cost, if you like you can " +
+                                "make a small donation to our PayPal"+"\n\n"
+                                +"https://paypal.me/ScienceCodeEcuador?country.x=EC&locale.x=es_XC");
+                    }
+                    try {
+                        execute(sendMessage);
+                    } catch (TelegramApiException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     break;
                 }
