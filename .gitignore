@@ -8,6 +8,10 @@
 /dataSources/
 /dataSources.local.xml
 
+#dependency-reduced
+dependency-reduced-pom.xml
+*/target/
+
 # Compiled class file
 *.class
 
